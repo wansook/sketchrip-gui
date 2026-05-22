@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "SketchRip",
+  "version": "0.1.0",
+  "description": "Sketchfab 3D model extractor - extract meshes, textures, and materials from any Sketchfab model",
+  "permissions": ["activeTab", "storage", "scripting"],
+  "host_permissions": [
+    "https://*.sketchfab.com/*",
+    "https://sketchfab.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.sketchfab.com/*"],
+      "js": ["utils/extractor.js", "utils/material.js", "utils/exporter.js", "content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "SketchRip"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

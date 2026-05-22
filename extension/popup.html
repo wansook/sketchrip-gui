@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SketchRip</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 320px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+    }
+    .header {
+      padding: 12px;
+      background: #16213e;
+      text-align: center;
+      border-bottom: 1px solid #0f3460;
+    }
+    .header h1 { font-size: 16px; color: #e94560; }
+    .header p { font-size: 10px; color: #666; margin-top: 2px; }
+    .content { padding: 12px; }
+    .url-input {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+    .url-input input {
+      flex: 1;
+      padding: 6px 8px;
+      background: #16213e;
+      border: 1px solid #0f3460;
+      border-radius: 4px;
+      color: #eee;
+      font-size: 12px;
+    }
+    .url-input input:focus { outline: none; border-color: #e94560; }
+    .url-input button {
+      padding: 6px 12px;
+      background: #e94560;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .actions {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .actions button {
+      flex: 1;
+      padding: 8px;
+      background: #e94560;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .actions button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .actions select {
+      padding: 8px;
+      background: #16213e;
+      border: 1px solid #0f3460;
+      border-radius: 4px;
+      color: #eee;
+      font-size: 12px;
+    }
+    .info {
+      padding: 8px;
+      background: #16213e;
+      border-radius: 4px;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    .info div { padding: 3px 0; display: flex; justify-content: space-between; }
+    .info span:first-child { color: #888; }
+    .info span:last-child { color: #e94560; }
+    .status { font-size: 11px; color: #aaa; text-align: center; padding: 8px 0; }
+    footer {
+      padding: 8px 12px;
+      font-size: 9px;
+      color: #444;
+      text-align: center;
+      border-top: 1px solid #0f3460;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🍢 SketchRip</h1>
+    <p>Sketchfab 3D Model Extractor</p>
+  </div>
+  
+  <div class="content">
+    <div class="url-input">
+      <input type="text" id="url" placeholder="sketchfab.com/3d-models/xxx" />
+      <button id="loadBtn">Load</button>
+    </div>
+    
+    <div class="actions">
+      <button id="extractBtn" disabled>Extract</button>
+      <select id="format">
+        <option value="glb">GLB</option>
+        <option value="gltf">glTF</option>
+        <option value="obj">OBJ</option>
+      </select>
+    </div>
+    
+    <div class="info" id="modelInfo">
+      <div><span>Meshes:</span><span id="meshCount">-</span></div>
+      <div><span>Triangles:</span><span id="triCount">-</span></div>
+      <div><span>Vertices:</span><span id="vertCount">-</span></div>
+      <div><span>Textures:</span><span id="texCount">-</span></div>
+    </div>
+    
+    <div class="status" id="status">Open a Sketchfab model page</div>
+  </div>
+  
+  <footer>SketchRip v0.1.0</footer>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
