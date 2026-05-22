@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SketchRip</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>SketchRip</h1>
+      <p class="subtitle">Sketchfab 3D Model Extractor</p>
+    </header>
+
+    <main>
+      <div class="controls">
+        <div class="url-input">
+          <input type="text" id="url" placeholder="Sketchfab 모델 URL 입력 (예: https://sketchfab.com/3d-models/xxx)" />
+          <button id="load-btn">로드</button>
+        </div>
+        <div class="actions">
+          <button id="extract-btn" disabled>추출</button>
+          <div class="format-select">
+            <label>포맷:</label>
+            <select id="format">
+              <option value="glb">GLB</option>
+              <option value="gltf">glTF</option>
+              <option value="obj">OBJ</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="panels">
+        <div class="panel preview">
+          <h2>미리보기</h2>
+          <webview id="sketchfab-viewer" class="webview" src="" nodeintegration="false" websecurity="on"></webview>
+          <div id="preview-placeholder">URL을 입력하고 로드하세요</div>
+        </div>
+
+        <div class="panel info">
+          <h2>추출 정보</h2>
+          <div id="model-info">
+            <div class="info-item"><span>메쉬:</span><span id="mesh-count">-</span></div>
+            <div class="info-item"><span>텍스처:</span><span id="texture-count">-</span></div>
+            <div class="info-item"><span>폴리곤:</span><span id="poly-count">-</span></div>
+            <div class="info-item"><span>버텍스:</span><span id="vertex-count">-</span></div>
+          </div>
+          <div id="progress" class="progress" style="display:none">
+            <div id="progress-bar"></div>
+          </div>
+          <div id="status"></div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <span>SketchRip v0.1.0</span>
+    </footer>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

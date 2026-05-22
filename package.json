@@ -1,0 +1,18 @@
+{
+  "name": "sketchrip-gui",
+  "version": "0.1.0",
+  "description": "Sketchfab 3D model extractor with GUI",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev"
+  },
+  "dependencies": {
+    "electron": "^35.0.0",
+    "three": "^0.174.0"
+  },
+  "devDependencies": {
+    "gltf-pipeline": "^4.1.0",
+    "glTF-Transform": "^5.0.0"
+  }
+}
