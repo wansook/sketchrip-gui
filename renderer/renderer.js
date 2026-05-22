@@ -9,6 +9,7 @@ const vertexCount = document.getElementById('vertex-count');
 const progressBar = document.getElementById('progress-bar');
 const progress = document.getElementById('progress');
 const statusEl = document.getElementById('status');
+const modelInfoDiv = document.getElementById('model-info');
 
 let loaded = false;
 let lastResult = null;
@@ -18,7 +19,6 @@ loadBtn.addEventListener('click', async () => {
   const url = urlInput.value.trim();
   if (!url) return;
 
-  // Validate URL
   if (!url.includes('sketchfab.com')) {
     statusEl.textContent = '⚠️ Sketchfab URL이 아닙니다';
     return;
@@ -47,31 +47,43 @@ loadBtn.addEventListener('click', async () => {
   loadBtn.disabled = false;
 });
 
+// Setup progress listener
+window.sketchrip.onProgress((data) => {
+  statusEl.textContent = data.status;
+  progressBar.style.width = `${data.percent}%`;
+});
+
 // Extract model
 extractBtn.addEventListener('click', async () => {
-  statusEl.textContent = '🔍 추출 중...';
-  progressBar.style.width = '30%';
+  statusEl.textContent = '🚀 Puppeteer 추출 시작...';
+  progressBar.style.display = 'block';
+  progressBar.style.width = '0%';
   extractBtn.disabled = true;
 
+  // Get current URL from the mainWindow
+  const currentUrl = await new Promise(resolve => {
+    // We need to get the URL from Electron - use a different approach
+    // For now, use the input URL
+    resolve(urlInput.value.trim());
+  });
+
   try {
-    const result = await window.sketchrip.extractModel();
-    progressBar.style.width = '80%';
+    const result = await window.sketchrip.extractModel({
+      url: currentUrl,
+      outputDir: require('os').tmpdir() + '/sketchrip',
+    });
 
     if (result.ok) {
-      statusEl.textContent = '✅ 추출 완료!';
+      statusEl.textContent = `✅ 추출 완료! (${result.extractTime}ms)`;
       progressBar.style.width = '100%';
 
-      // Update info display
       if (result.stats) {
-        meshCount.textContent = result.stats.meshCount ?? '-';
+        meshCount.textContent = result.stats.meshes;
         polyCount.textContent = result.stats.triangles?.toLocaleString() ?? '-';
         vertexCount.textContent = result.stats.vertices?.toLocaleString() ?? '-';
-      }
-      if (result.textures) {
-        textureCount.textContent = result.textures.length;
+        textureCount.textContent = result.textureFiles ?? '-';
       }
 
-      // Store result for export
       lastResult = result;
     } else {
       statusEl.textContent = `❌ 추출 실패: ${result.error}`;
@@ -83,7 +95,7 @@ extractBtn.addEventListener('click', async () => {
   extractBtn.disabled = false;
 });
 
-// Export
+// Export button (added dynamically)
 const exportBtn = document.getElementById('export-btn');
 if (exportBtn) {
   exportBtn.addEventListener('click', async () => {
@@ -99,14 +111,14 @@ if (exportBtn) {
 
     try {
       if (format === 'glb') {
-        const result = await window.sketchrip.exportGLB(lastResult);
+        const result = await window.sketchrip.exportGLB(lastResult.data);
         if (result.ok) {
           statusEl.textContent = `✅ GLB 저장 완료: ${result.path}`;
         } else {
           statusEl.textContent = `❌ 저장 실패: ${result.error}`;
         }
       } else if (format === 'obj') {
-        const result = await window.sketchrip.exportOBJ(lastResult);
+        const result = await window.sketchrip.exportOBJ(lastResult.data);
         if (result.ok) {
           statusEl.textContent = `✅ OBJ 저장 완료: ${result.path}`;
         } else {
@@ -127,12 +139,49 @@ urlInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') loadBtn.click();
 });
 
-// Add export button dynamically (since it wasn't in the HTML)
+// Add export button dynamically
 const actionsDiv = document.querySelector('.actions');
 if (actionsDiv) {
   const exportBtnEl = document.createElement('button');
   exportBtnEl.id = 'export-btn';
   exportBtnEl.textContent = '내보내기';
   exportBtnEl.style.background = '#0f3460';
+  exportBtnEl.disabled = true;
+  actionsDiv.insertBefore(exportBtnEl, actionsDiv.firstChild);
+
+  // Update reference
+  exportBtnEl.addEventListener('click', () => {
+    if (!lastResult) {
+      statusEl.textContent = '⚠️ 먼저 모델을 추출하세요';
+      return;
+    }
+
+    const format = formatSelect.value;
+    exportBtnEl.textContent = '저장 중...';
+    exportBtnEl.disabled = true;
+    statusEl.textContent = `${format.toUpperCase()} 저장 중...`;
+
+    if (format === 'glb') {
+      window.sketchrip.exportGLB(lastResult.data).then(result => {
+        if (result.ok) {
+          statusEl.textContent = `✅ GLB 저장 완료`;
+        } else {
+          statusEl.textContent = `❌ 저장 실패: ${result.error}`;
+        }
+        exportBtnEl.textContent = '내보내기';
+        exportBtnEl.disabled = false;
+      });
+    } else if (format === 'obj') {
+      window.sketchrip.exportOBJ(lastResult.data).then(result => {
+        if (result.ok) {
+          statusEl.textContent = `✅ OBJ 저장 완료`;
+        } else {
+          statusEl.textContent = `❌ 저장 실패: ${result.error}`;
+        }
+        exportBtnEl.textContent = '내보내기';
+        exportBtnEl.disabled = false;
+      });
+    }
+  });
   actionsDiv.insertBefore(exportBtnEl, actionsDiv.firstChild);
 }

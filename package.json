@@ -8,11 +8,9 @@
     "dev": "electron . --dev"
   },
   "dependencies": {
+    "@types/three": "^0.184.1",
     "electron": "^35.0.0",
+    "puppeteer": "^25.0.4",
     "three": "^0.174.0"
-  },
-  "devDependencies": {
-    "gltf-pipeline": "^4.1.0",
-    "glTF-Transform": "^5.0.0"
   }
 }
