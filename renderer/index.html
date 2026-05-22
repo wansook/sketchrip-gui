@@ -20,6 +20,7 @@
           <button id="load-btn">로드</button>
         </div>
         <div class="actions">
+          <button id="export-btn" style="display:none">내보내기</button>
           <button id="extract-btn" disabled>추출</button>
           <div class="format-select">
             <label>포맷:</label>
@@ -41,6 +42,12 @@
 
         <div class="panel info">
           <h2>추출 정보</h2>
+          <div id="export-info" style="display:none; padding: 8px 16px;">
+            <div style="display:flex;gap:8px;margin-bottom:8px;">
+              <button id="export-btn-side" style="flex:1">📦 GLB</button>
+              <button id="export-btn-obj" style="flex:1">📦 OBJ</button>
+            </div>
+          </div>
           <div id="model-info">
             <div class="info-item"><span>메쉬:</span><span id="mesh-count">-</span></div>
             <div class="info-item"><span>텍스처:</span><span id="texture-count">-</span></div>
